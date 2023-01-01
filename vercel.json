@@ -1,21 +1,7 @@
 {
-  "version": 2,
-  "name": "memo",
-  "builds": [
-    {
-      "src": "index.js",
-      "use": "@now/node"
-    }
-  ],
-  "routes": [
-    {
-      "src": "/(.*)",
-      "dest": "index.js"
-    }
-  ],
   "headers": [
     {
-      "source": "/src/routes/(.*)",
+      "source": "/src/(.*)",
       "headers": [
         { "key": "Access-Control-Allow-Credentials", "value": "true" },
         { "key": "Access-Control-Allow-Origin", "value": "*" },
