@@ -1,0 +1,72 @@
+POST http://localhost:8080/api/auth/register
+Content-Type: application/json
+
+{
+    "username": "chinhnt2",
+    "password": "Aa123@@@",
+    "email": "chinhnt2@gmail.com"
+}
+
+###
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+    "username": "ntc",
+    "password": "123456"
+}
+
+###
+POST http://localhost:8080/api/courses/create
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Mzk1MzZkZmMwNjYxYTMxZDg1MjM4YjIiLCJpYXQiOjE2NzExODU3NDB9.qH3jGt076ZteFPq8AXi_kfu5XFe3GWu82iuTgca3lX4
+
+{
+    "name": "Course 13",
+    "description": "fdgsdfsd",
+    "language": "english",
+    "my_language": "english"
+}
+
+###
+POST http://localhost:8080/api/courses
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Mzk1MzZkZmMwNjYxYTMxZDg1MjM4YjIiLCJpYXQiOjE2NzExODU3NDB9.qH3jGt076ZteFPq8AXi_kfu5XFe3GWu82iuTgca3lX4
+
+{
+    "skip": 0,
+    "limit": 20
+}
+
+###
+POST http://localhost:8080/api/courses/detail
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmZjgyZDZhMWE5YWRhMzI0MDQ5NDciLCJpYXQiOjE2NjczMTQxMjd9.2Pte2pPlx8kCww-tehDw0JZfitZP3J-OZlPiDENUxM8
+
+{
+    "id": "63614c7f78017e72ffbfecb7"
+}
+
+###
+POST http://localhost:8080/api/courses/delete
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmZjgyZDZhMWE5YWRhMzI0MDQ5NDciLCJpYXQiOjE2NjczMTQxMjd9.2Pte2pPlx8kCww-tehDw0JZfitZP3J-OZlPiDENUxM8
+
+{
+    "id": "635ffbf586e98053c3f1d5c7"
+}
+
+
+###create word
+POST http://localhost:8080/api/words/create
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmZjgyZDZhMWE5YWRhMzI0MDQ5NDciLCJpYXQiOjE2NjczMTQxMjd9.2Pte2pPlx8kCww-tehDw0JZfitZP3J-OZlPiDENUxM8
+
+{
+    "courseId": "63614c7f78017e72ffbfecb7",
+    "words": [
+        {"name": "English3",
+    "description": "Tiến"}, {"name": "Eng",
+    "description": "Tiếng anh4"}
+    ]
+}
