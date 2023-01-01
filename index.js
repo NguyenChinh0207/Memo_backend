@@ -6,14 +6,13 @@ import initRoutes from "./src/routes/init.routes";
 const cors = require("cors");
 dotenv.config();
 
-app.get("/", (req, res) => {
-  res.send("Hey this is my API running 🥳");
-});
-
 const app = express();
 app.use(express.json());
 app.use(cors());
 
+app.get("/", (req, res) => {
+  res.send("Hey this is my API running 🥳");
+});
 database.connectDatabase();
 
 initRoutes(app);
