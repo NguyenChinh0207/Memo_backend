@@ -2,12 +2,16 @@ import express from "express";
 const courseRouter = express.Router();
 
 import verifyToken from "../middleware/auth";
-import { create, deleteCourse, detail, edit, list } from "../controllers/courseController";
+import { addMyCourse, create, deleteCourse, detail, edit, getMyCourses, list, listCourseOwner, removeMyCourse } from "../controllers/courseController";
 
 courseRouter.post("/create", verifyToken, create);
 courseRouter.post("/edit", verifyToken, edit);
 courseRouter.post("/", verifyToken, list);
 courseRouter.post("/detail", verifyToken, detail);
 courseRouter.post("/delete", verifyToken, deleteCourse);
+courseRouter.post("/wishlist/add", verifyToken, addMyCourse);
+courseRouter.post("/wishlist/remove", verifyToken, removeMyCourse);
+courseRouter.post("/mycourses", verifyToken, getMyCourses);
+courseRouter.post("/list/owner", verifyToken, listCourseOwner);
 
 export default courseRouter;

@@ -3,9 +3,9 @@ const wordRouter = express.Router();
 
 import verifyToken from "../middleware/auth";
 import {
-  create,
+   updateWords,
 } from "../controllers/wordController";
 
-wordRouter.post("/create", verifyToken, create);
+wordRouter.post("/update", verifyToken, updateWords);
 
 export default wordRouter;

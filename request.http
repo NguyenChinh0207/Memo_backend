@@ -22,7 +22,7 @@ Content-Type: application/json
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Mzk1MzZkZmMwNjYxYTMxZDg1MjM4YjIiLCJpYXQiOjE2NzExODU3NDB9.qH3jGt076ZteFPq8AXi_kfu5XFe3GWu82iuTgca3lX4
 
 {
-    "name": "Course 13",
+    "name": "Course 14",
     "description": "fdgsdfsd",
     "language": "english",
     "my_language": "english"
@@ -41,10 +41,10 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2Mzk1M
 ###
 POST http://localhost:8080/api/courses/detail
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmZjgyZDZhMWE5YWRhMzI0MDQ5NDciLCJpYXQiOjE2NjczMTQxMjd9.2Pte2pPlx8kCww-tehDw0JZfitZP3J-OZlPiDENUxM8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2IwMDBmNDA1ZjM5NTNjNDY1MWQzYTMiLCJpYXQiOjE2NzI0NzkwMjh9.rB0eo1vPJYpyjiVnPNDxcKmiM1RroiBr-eTEtvUjdBU
 
 {
-    "id": "63614c7f78017e72ffbfecb7"
+    "id": "63b29be0a3d5bf5fb95c4172"
 }
 
 ###
@@ -69,4 +69,86 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2MzVmZ
     "description": "Tiến"}, {"name": "Eng",
     "description": "Tiếng anh4"}
     ]
+}
+
+### add my course
+POST http://localhost:8080/api/courses/wishlist/add
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2JhMTc0ZGQzYzU3MmIwY2VlMjE3MWYiLCJpYXQiOjE2NzMzNzYwNjN9._fzTC6moDbYDZRuJzOwmlYUOYnsEKp1psSeH1URKb-k
+
+{
+    "courseId": "63bae5b772c6d447a79e7359",
+    "userId":"63ba174dd3c572b0cee2171f"
+}
+### remove my course
+POST http://localhost:8080/api/courses/wishlist/remove
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2IwMDBmNDA1ZjM5NTNjNDY1MWQzYTMiLCJpYXQiOjE2NzI0NzkwMjh9.rB0eo1vPJYpyjiVnPNDxcKmiM1RroiBr-eTEtvUjdBU
+
+{
+    "courseId": "63b2a74e567f96545b7de29b",
+    "userId":"63b000f405f3953c4651d3a3"
+}
+
+### get my course
+POST http://localhost:8080/api/courses/mycourses
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2JhMTc0ZGQzYzU3MmIwY2VlMjE3MWYiLCJpYXQiOjE2NzMzNzYwNjN9._fzTC6moDbYDZRuJzOwmlYUOYnsEKp1psSeH1URKb-k
+
+{
+    "userId":"63ba174dd3c572b0cee2171f"
+}
+
+### get my course
+POST http://localhost:8080/api/progress/create
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2MyZTNiYTlkMWJjOWFkMTA2ZDllYWEiLCJpYXQiOjE2NzM3MTY2NzJ9.tYkZDHty9r5wAIiwzxy3E29cpissannU-f8gczB8PXc
+
+{
+    "userId":"63c2e3ba9d1bc9ad106d9eaa",
+    "progress": "{}"
+}
+
+### save user 
+POST http://localhost:8080/api/auth/save/user
+Content-Type: application/json
+
+{
+    "name": "Nguyễn Thị Chinh",
+    "email": "nchinh407@gmail.com",
+    "picture": {
+        "data": {
+            "height": 50,
+            "is_silhouette": false,
+            "url": "https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=1846012049068336&height=50&width=50&ext=1675614005&hash=AeRxNm_khVarijr7ipQ",
+            "width": 50
+        }
+    },
+    "id": "1846012049068336",
+    "accessToken": "EAAM4qneu1NMBADZCweL0qNZCvVoQq6BATsp1i4ycFX90K1I03CxR6nIiPLCbMrbjRtz5gcq5YeZAKo1O3dkfvhEJr6vSPOsjvqOwZBBawcbGL6lWSbtFyJ8ZCisQBSKXrVZBoVWWHxeFZCfj1V2BYCY1aG23mmZCjtcZBv6lTSQCuwVXtGW6pgPKY07tmMo43XHp7LlWsabQCVyD3HE5yXioNj6DNrvzOpC0ZD",
+    "userID": "1846012049068336",
+    "expiresIn": 5996,
+    "signedRequest": "mC3yUNyUYSSiLLPVrvMw5AjLMqGWlj6o5dHPX6kROHo.eyJ1c2VyX2lkIjoiMTg0NjAxMjA0OTA2ODMzNiIsImNvZGUiOiJBUURVemw4T1N3UTRXMDlrWjFDUURCZmhGZHcxTFpEYmtpUnRjQ3NjX2NRN2toUk9rc2o5cU5MTmZtWk94emZWVWxIYlNuelJqaXdQOHhBcEw0NFZFdnl3M0NrRkw1Z0VSS3JscnlLT1ZxSklfZFdsNE94ZVhzT1RYOERSR3doRHczSjlqNDZmemlFcWZJODBMcW9ia1Bvd29YTDZaS1VJU0Y3MzE5NG1fQlozTktzeXZlMXQyX21QS3pQRWo3NWpaaERqMDJuYUN5RjJKR2xJdnRueS14YzVGT1ZPWjVxTlZ6bEg4SFdrVG81blZrclFpUG5GSWREazJHckFXVmRJUzR1b3RmeTAxd1RwR2NkazlUUXBVVmhQSmF4Sm1ycUpqLWtSLW0xU0NWN25yTTVuc3FyX0gzMGx4MUxyZzZqNm9sY3hYQUthS2RYbzRWN1lSM1RJYVZFellIckROanpobS1LV1Z5WVF6ZW5IY09uczMzbjU2UlZGa2pqOFctQjlWNnFSVEZjNUhCX3ZKNXh5SzdvdHk5aXIiLCJhbGdvcml0aG0iOiJITUFDLVNIQTI1NiIsImlzc3VlZF9hdCI6MTY3MzAyMjAwNH0",
+    "graphDomain": "facebook",
+    "data_access_expiration_time": 1680798004
+}
+
+### get list owner
+POST http://localhost:8080/api/courses/list/owner
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2JhMTc0ZGQzYzU3MmIwY2VlMjE3MWYiLCJpYXQiOjE2NzMxOTI4OTV9.8p8bbZ5P7pC2aw3dScStdAv8PrnClHLYglQmI_r5cnc
+
+{
+    "userId":"63ba174dd3c572b0cee2171f",
+    "limit": 100,
+    "skip": 0
+}
+
+### get progress
+POST http://localhost:8080/api/progress/detail
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2M2MzNjkwNWUzYTBhYWIwMzFhMTBmNjQiLCJpYXQiOjE2NzM3NTA3OTR9.g7GLwY-KCIoot7Ny8kp5unF9aW0DWTLqgvLBFzDYXao
+
+{
+    "userId":"63c36905e3a0aab031a10f64"
 }

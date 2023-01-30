@@ -16,10 +16,10 @@ const CourseSchema = new Schema(
       type: String,
     },
     image: {
-      type: String
+      type: String,
     },
     active: { type: Number, default: 0 },
-    words: [{ type: Schema.Types.ObjectId, ref: "Words" }],
+    words: {type: String},
     owner: { type: Schema.Types.ObjectId, ref: "Users" },
   },
   {

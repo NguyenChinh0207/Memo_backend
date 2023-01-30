@@ -17,6 +17,7 @@ export const register = async (req, res, next) => {
     const user = await Users.findOne({ username });
     if (user) {
       return res.status(400).json({
+        code:"E003",
         success: false,
         message: "Username already taken.",
       });
@@ -24,6 +25,7 @@ export const register = async (req, res, next) => {
     const emailField = await Users.findOne({ email });
     if (emailField) {
       return res.status(400).json({
+        code: "E004",
         success: false,
         message: "Email already taken.",
       });
@@ -42,6 +44,7 @@ export const register = async (req, res, next) => {
       success: true,
       message: "User created successfully",
       accessToken,
+      data: newUser,
     });
   } catch (error) {
     console.log(error);
@@ -106,8 +109,69 @@ export const forgotPassword = async (req, res, next) => {
     }
     return res.json({
       success: true,
-      message: "User login successfully",
-      accessToken
+      message: "User login successfully"
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal error server" });
+  }
+};
+
+export const saveUser = async (req, res, next) => {
+  const user_fb = req.body;
+  try {
+    const email_fb = user_fb?.email;
+    const user = await Users.findOne({ email: email_fb });
+    if (user) {
+      const accessToken = jwt.sign(
+        { userId: user._id },
+        process.env.ACCESS_TOKEN_SECRET
+      );
+      return res.json({
+        success: true,
+        message: "User login successfully",
+        accessToken,
+        data: user,
+      });
+    } else {
+      const newUser = new Users({
+        username: user_fb?.name,
+        email: user_fb?.email,
+      });
+      await newUser.save();
+      const accessToken = jwt.sign(
+        { userId: user_fb?.userID },
+        process.env.ACCESS_TOKEN_SECRET
+      );
+      return res.json({
+        success: true,
+        message: "User login successfully",
+        accessToken,
+        data: newUser,
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal error server" });
+  }
+};
+export const listUsers = async (req, res) => {
+  const {keyword } = req.body;
+  try {
+    let users = await Users.find({
+      $or: [
+        { username: { $regex: `${keyword}` } },
+        { fullname: { $regex: `${keyword}` } },
+        { email: { $regex: `${keyword}` } },
+      ],
+    })
+      .populate("courses")
+      .sort({ createdAt: -1 })
+
+    res.json({
+      success: true,
+      message: "get list successfull",
+      data: users
     });
   } catch (error) {
     console.log(error);
