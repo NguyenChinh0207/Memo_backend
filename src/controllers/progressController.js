@@ -1,6 +1,6 @@
-import Courses from "../models/Course";
-import Progress from "../models/Progress";
-import Users from "../models/User";
+import Courses from "../models/Course.js";
+import Progress from "../models/Progress.js";
+import Users from "../models/User.js";
 
 export const createProgress = async (req, res) => {
   const { progress, userId } = req.body;

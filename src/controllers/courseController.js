@@ -1,5 +1,5 @@
-import Courses from "../models/Course";
-import Users from "../models/User";
+import Courses from "../models/Course.js";
+import Users from "../models/User.js";
 import { getMyCoursesService } from "../services/courses.service";
 
 export const create = async (req, res) => {

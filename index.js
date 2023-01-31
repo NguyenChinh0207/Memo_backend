@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
-import database from "./src/configs/db.configs";
+import database from "./src/configs/db.configs.js";
 import express from "express";
-import initRoutes from "./src/routes/init.routes";
+import initRoutes from "./src/routes/init.routes.js";
 
 const cors = require("cors");
 dotenv.config();

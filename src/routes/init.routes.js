@@ -1,9 +1,9 @@
-import adminRouter from './admin';
-import authRouter from './auth';
-import courseRouter from './course';
-import examRouter from './exam';
-import progressRouter from './progress';
-import wordRouter from './word';
+import adminRouter from './admin.js';
+import authRouter from './auth.js';
+import courseRouter from './course.js';
+import examRouter from './exam.js';
+import progressRouter from './progress.js';
+import wordRouter from './word.js';
 
 const initRoutes = (app) => {
     app.use("/api/admin", adminRouter);

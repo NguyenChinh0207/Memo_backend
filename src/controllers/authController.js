@@ -1,5 +1,5 @@
 import argon2 from "argon2";
-import Users from "../models/User";
+import Users from "../models/User.js";
 import jwt from "jsonwebtoken";
 
 export const register = async (req, res, next) => {
