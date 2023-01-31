@@ -2,7 +2,7 @@ import express from "express";
 import { create, deleteExam, detail, edit, list } from "../controllers/examController.js";
 const examRouter = express.Router();
 
-import verifyToken from "../middleware/auth";
+import verifyToken from "../middleware/auth.js";
 
 examRouter.post("/create", verifyToken, create);
 examRouter.post("/edit", verifyToken, edit);

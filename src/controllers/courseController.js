@@ -1,6 +1,6 @@
 import Courses from "../models/Course.js";
 import Users from "../models/User.js";
-import { getMyCoursesService } from "../services/courses.service";
+import { getMyCoursesService } from "../services/courses.service.js";
 
 export const create = async (req, res) => {
   const data = req.body;
