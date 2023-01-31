@@ -1,7 +1,7 @@
 import express from "express";
 const authRouter = express.Router();
-import verifyToken from "../middleware/auth";
-import { login, register, forgotPassword, saveUser } from "../controllers/authController";
+import verifyToken from "../middleware/auth.js";
+import { login, register, forgotPassword, saveUser } from "../controllers/authController.js";
 
 authRouter.post("/register", register);
 authRouter.post("/login", login);

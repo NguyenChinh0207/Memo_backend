@@ -1,6 +1,6 @@
 import express from "express";
 const adminRouter = express.Router();
-import verifyToken from "../middleware/auth";
+import verifyToken from "../middleware/auth.js";
 import {
   listUsers,
 } from "../controllers/authController";

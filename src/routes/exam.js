@@ -1,5 +1,5 @@
 import express from "express";
-import { create, deleteExam, detail, edit, list } from "../controllers/examController";
+import { create, deleteExam, detail, edit, list } from "../controllers/examController.js";
 const examRouter = express.Router();
 
 import verifyToken from "../middleware/auth";

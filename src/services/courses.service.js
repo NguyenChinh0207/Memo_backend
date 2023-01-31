@@ -1,5 +1,5 @@
-import Progress from "../models/Progress";
-import Users from "../models/User";
+import Progress from "../models/Progress.js";
+import Users from "../models/User.js";
 
 export const getMyCoursesService = async (userId) => {
   const user = await Users.findById(userId)
