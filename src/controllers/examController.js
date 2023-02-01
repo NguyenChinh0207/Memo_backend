@@ -93,6 +93,23 @@ export const detail = async (req, res) => {
   }
 };
 
+export const getExamByCourseId = async (req, res) => {
+  const { courseId } = req.body;
+  try {
+    const exams = await Exams.find({ courseId: courseId }).sort({
+      createdAt: -1,
+    });
+    return res.json({
+      success: true,
+      message: "get detail successfull",
+      data: exams,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal error server" });
+  }
+};
+
 export const deleteExam = async (req, res) => {
   const { id } = req.body;
   try {

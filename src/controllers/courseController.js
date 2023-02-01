@@ -83,6 +83,34 @@ export const list = async (req, res) => {
   }
 };
 
+export const listAll = async (req, res) => {
+  const { keyword } = req.body;
+  try {
+    const coursesTotal = await Courses();
+    let courses = await Courses.find({
+      $or: [
+        { language: { $regex: `${keyword}` } },
+        { name: { $regex: `${keyword}` } }
+      ],
+    })
+      .populate("owner")
+      .sort({ createdAt: -1 })
+
+    const total = coursesTotal?.length;
+
+    res.json({
+      success: true,
+      message: "get list all successfull",
+      data: courses,
+      total: total,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal error server" });
+  }
+};
+
+
 export const listCourseOwner = async (req, res) => {
   const { userId } = req.body;
   try {

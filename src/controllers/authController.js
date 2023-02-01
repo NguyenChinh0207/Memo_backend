@@ -67,6 +67,7 @@ export const login = async (req, res, next) => {
     const user = await Users.findOne({ username });
     if (!user) {
       return res.status(400).json({
+        code: "E001",
         success: false,
         message: "Incorrect username or password.",
       });
@@ -75,6 +76,7 @@ export const login = async (req, res, next) => {
     const passwordValid = await argon2.verify(user.password, password);
     if (!passwordValid) {
       return res.status(400).json({
+        code: "E002",
         success: false,
         message: "Incorrect password",
       });
@@ -172,6 +174,27 @@ export const listUsers = async (req, res) => {
       success: true,
       message: "get list successfull",
       data: users
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal error server" });
+  }
+};
+export const editUser = async (req, res) => {
+  const data = req.body;
+  try {
+    const user = await Users.findById(data._id);
+    for (const [key, value] of Object.entries(data)) {
+      if (user[key] !== data[key]) {
+        user[key] = value;
+      }
+    }
+
+    await user.save();
+    res.json({
+      success: true,
+      message: "Edit User successfull",
+      id: user._id,
     });
   } catch (error) {
     console.log(error);
