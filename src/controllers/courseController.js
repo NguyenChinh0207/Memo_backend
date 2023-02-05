@@ -31,6 +31,8 @@ export const create = async (req, res) => {
 
 export const edit = async (req, res) => {
   const data = req.body;
+  // const url = req.protocol + "://" + req.get("host");
+  // data.image = url + "/uploads/" + data.image;
   try {
     const course = await Courses.findById(data.id);
     for (const [key, value] of Object.entries(data)) {
@@ -43,7 +45,8 @@ export const edit = async (req, res) => {
     res.json({
       success: true,
       message: "Edit Course successfull",
-      id: course._id,
+      image: course.image,
+      id: course._id
     });
   } catch (error) {
     console.log(error);
@@ -56,7 +59,7 @@ export const list = async (req, res) => {
   try {
     const coursesTotal = await Courses.find({
       active: 1,
-    })
+    });
     let courses = await Courses.find({
       active: 1,
       $or: [
@@ -90,11 +93,11 @@ export const listAll = async (req, res) => {
     let courses = await Courses.find({
       $or: [
         { language: { $regex: `${keyword}` } },
-        { name: { $regex: `${keyword}` } }
+        { name: { $regex: `${keyword}` } },
       ],
     })
       .populate("owner")
-      .sort({ createdAt: -1 })
+      .sort({ createdAt: -1 });
 
     const total = coursesTotal?.length;
 
@@ -110,19 +113,18 @@ export const listAll = async (req, res) => {
   }
 };
 
-
 export const listCourseOwner = async (req, res) => {
   const { userId } = req.body;
   try {
     const coursesTotal = await Courses.find({
-      owner: await Users.find({_id: userId})
-    })
+      owner: await Users.find({ _id: userId }),
+    });
     let courses = await Courses.find({
-      owner: await Users.find({_id: userId})
+      owner: await Users.find({ _id: userId }),
     })
       .populate("owner")
-      .sort({ createdAt: -1 })
-    
+      .sort({ createdAt: -1 });
+
     const total = coursesTotal?.length;
 
     res.json({
@@ -140,8 +142,7 @@ export const listCourseOwner = async (req, res) => {
 export const detail = async (req, res) => {
   const { id } = req.body;
   try {
-    const course = await Courses.findById(id)
-      .populate("owner");
+    const course = await Courses.findById(id).populate("owner");
     return res.json({
       success: true,
       message: "get detail successfull",

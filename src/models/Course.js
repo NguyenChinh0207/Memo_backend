@@ -18,8 +18,10 @@ const CourseSchema = new Schema(
     image: {
       type: String,
     },
+    voice: { type: Number, default: 13 },
     active: { type: Number, default: 0 },
-    words: {type: String},
+    words: { type: String },
+    units: [{ type: Schema.Types.ObjectId, ref: "Units" }],
     owner: { type: Schema.Types.ObjectId, ref: "Users" },
   },
   {
