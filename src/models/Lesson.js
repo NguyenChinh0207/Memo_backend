@@ -9,7 +9,7 @@ const LessonSchema = new Schema(
     titleTargetLanguage: {
       type: String,
     },
-    description: {
+    content: {
       type: String,
     },
     type: {

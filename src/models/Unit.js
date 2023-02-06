@@ -9,7 +9,6 @@ const UnitSchema = new Schema(
     image: {
       type: String,
     },
-    tag: { type: String },
     description: { type: String },
     skills: [{ type: Schema.Types.ObjectId, ref: "Skills" }],
     lessons: [{ type: Schema.Types.ObjectId, ref: "Lessons" }],

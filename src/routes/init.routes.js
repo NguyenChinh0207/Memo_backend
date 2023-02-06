@@ -3,6 +3,7 @@ import authRouter from "./auth.js";
 import courseRouter from "./course.js";
 import examRouter from "./exam.js";
 import progressRouter from "./progress.js";
+import unitRouter from "./unit.js";
 import wordRouter from "./word.js";
 
 const initRoutes = (app) => {
@@ -16,5 +17,6 @@ const initRoutes = (app) => {
   app.use("/api/words", wordRouter);
   app.use("/api/progress", progressRouter);
   app.use("/api/exams", examRouter);
+  app.use("/api/units", unitRouter);
 };
 export default initRoutes;
