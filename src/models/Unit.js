@@ -10,7 +10,6 @@ const UnitSchema = new Schema(
       type: String,
     },
     description: { type: String },
-    skills: [{ type: Schema.Types.ObjectId, ref: "Skills" }],
     lessons: [{ type: Schema.Types.ObjectId, ref: "Lessons" }],
     courseId: { type: Schema.Types.ObjectId, ref: "Courses" },
   },

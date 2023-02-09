@@ -1,3 +1,4 @@
+import Courses from "../models/Course.js";
 import Exams from "../models/Exams.js";
 import Units from "../models/Unit.js";
 
@@ -77,9 +78,8 @@ export const getUnitsByCourseId = async (req, res) => {
   try {
     const units = await Units.find({ courseId: courseId })
       .sort({
-        createdAt: -1,
+        createdAt: 1,
       })
-      .populate("skills")
       .populate("lessons");
     return res.json({
       success: true,

@@ -2,6 +2,7 @@ import adminRouter from "./admin.js";
 import authRouter from "./auth.js";
 import courseRouter from "./course.js";
 import examRouter from "./exam.js";
+import lessonRouter from "./lesson.js";
 import progressRouter from "./progress.js";
 import unitRouter from "./unit.js";
 import wordRouter from "./word.js";
@@ -18,5 +19,6 @@ const initRoutes = (app) => {
   app.use("/api/progress", progressRouter);
   app.use("/api/exams", examRouter);
   app.use("/api/units", unitRouter);
+  app.use("/api/lessons", lessonRouter);
 };
 export default initRoutes;

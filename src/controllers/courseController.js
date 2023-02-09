@@ -1,4 +1,5 @@
 import Courses from "../models/Course.js";
+import Units from "../models/Unit.js";
 import Users from "../models/User.js";
 import { getMyCoursesService } from "../services/courses.service.js";
 
@@ -46,7 +47,7 @@ export const edit = async (req, res) => {
       success: true,
       message: "Edit Course successfull",
       image: course.image,
-      id: course._id
+      id: course._id,
     });
   } catch (error) {
     console.log(error);
@@ -68,6 +69,7 @@ export const list = async (req, res) => {
       ],
     })
       .populate("owner")
+      .populate("units")
       .sort({ createdAt: -1 })
       .skip(skip * limit)
       .limit(limit);
@@ -124,7 +126,6 @@ export const listCourseOwner = async (req, res) => {
     })
       .populate("owner")
       .sort({ createdAt: -1 });
-
     const total = coursesTotal?.length;
 
     res.json({
@@ -142,7 +143,9 @@ export const listCourseOwner = async (req, res) => {
 export const detail = async (req, res) => {
   const { id } = req.body;
   try {
-    const course = await Courses.findById(id).populate("owner");
+    const course = await Courses.findById(id)
+      .populate("owner")
+      .populate("units");
     return res.json({
       success: true,
       message: "get detail successfull",

@@ -12,13 +12,18 @@ const LessonSchema = new Schema(
     content: {
       type: String,
     },
-    type: {
+    tagType: {
       type: String,
     },
     video: {
       type: String,
     },
     newWords: [
+      {
+        type: Object,
+      },
+    ],
+    questions: [
       {
         type: Object,
       },
