@@ -17,7 +17,7 @@ database.connectDatabase();
 
 initRoutes(app);
 
-// const PORT = process.env.PORT;
+const PORT = process.env.PORT;
 
-// app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
-app.listen(() => console.log("Server started"));
+app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+// app.listen(() => console.log("Server started"));
