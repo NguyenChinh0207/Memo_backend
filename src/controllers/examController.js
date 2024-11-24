@@ -115,8 +115,8 @@ export const deleteExam = async (req, res) => {
   try {
     const exam = await Exams.findById(id);
     if (!exam) {
-      return res.json({
-        code: "E401",
+      return res.status(404).json({
+        code: "E404",
         success: false,
         message: "exam not found",
         data: exam._id,

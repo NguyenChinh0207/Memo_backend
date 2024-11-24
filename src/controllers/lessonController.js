@@ -101,8 +101,8 @@ export const deleteLesson = async (req, res) => {
   try {
     const lesson = await Lessons.findById(id);
     if (!lesson) {
-      return res.json({
-        code: "E401",
+      return res.status(404).json({
+        code: "E404",
         success: false,
         message: "Lesson not found",
         data: unit._id,

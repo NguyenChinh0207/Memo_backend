@@ -97,8 +97,8 @@ export const deleteUnit = async (req, res) => {
   try {
     const unit = await Units.findById(id);
     if (!unit) {
-      return res.json({
-        code: "E401",
+      return res.status(404).json({
+        code: "E404",
         success: false,
         message: "Unit not found",
         data: unit._id,

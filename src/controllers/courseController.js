@@ -1,39 +1,57 @@
 import Courses from "../models/Course.js";
-import Units from "../models/Unit.js";
 import Users from "../models/User.js";
 import { getMyCoursesService } from "../services/courses.service.js";
 
 export const create = async (req, res) => {
   const data = req.body;
-  // Simple validate
-  if (!data.name) {
+
+  if (!data.name || !data.owner) {
     return res.status(400).json({
+      code: "E400",
       success: false,
-      message: "Course name is require",
+      message: "Name and owner are required",
     });
   }
-  try {
-    const newCourse = new Courses({
-      ...data,
-      owner: data.owner,
-    });
 
+  try {
+    // Tạo khóa học mới
+    const newCourse = new Courses({ ...data });
     await newCourse.save();
+
+    // Cập nhật thông tin của owner
+    const owner = await Users.findById(data.owner);
+    if (!owner) {
+      return res.status(404).json({
+        code: "E404",
+        success: false,
+        message: "Owner not found",
+      });
+    }
+
+    owner.courses = owner.courses || [];
+    owner.courses.push(newCourse._id);
+    await owner.save();
+
     res.json({
       success: true,
-      message: "Create successfull",
+      message: "Create successful",
       data: newCourse,
     });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ success: false, message: "Internal error server" });
+    console.error(error);
+    res.status(500).json({
+      code: "E500",
+      success: false,
+      message: "Internal server error",
+      error: error.message,
+    });
   }
 };
 
 export const edit = async (req, res) => {
   const data = req.body;
   // const url = req.protocol + "://" + req.get("host");
-  // data.image = url + "/uploads/" + data.image;
+  // data.image = url + "/src/uploads/" + data.image;
   try {
     const course = await Courses.findById(data.id);
     for (const [key, value] of Object.entries(data)) {
@@ -47,7 +65,7 @@ export const edit = async (req, res) => {
       success: true,
       message: "Edit Course successfull",
       image: course.image,
-      id: course._id,
+      data: course,
     });
   } catch (error) {
     console.log(error);
@@ -89,53 +107,83 @@ export const list = async (req, res) => {
 };
 
 export const listAll = async (req, res) => {
-  const { keyword } = req.body;
+  const { keyword = "", status } = req.body;
+
   try {
-    const coursesTotal = await Courses();
-    let courses = await Courses.find({
+    // Tạo điều kiện tìm kiếm chính cho khóa học
+    const query = {
       $or: [
-        { language: { $regex: `${keyword}` } },
-        { name: { $regex: `${keyword}` } },
+        { name: { $regex: keyword, $options: "i" } }, // Tìm theo tên khóa học
+        { language: { $regex: keyword, $options: "i" } }, // Tìm theo ngôn ngữ
+        { my_language: { $regex: keyword, $options: "i" } }, // Tìm theo ngôn ngữ
       ],
-    })
-      .populate("owner")
+    };
+
+    // Kiểm tra nếu status là mảng không rỗng thì thêm điều kiện active
+    if (status && status.length > 0) {
+      query.active = { $in: status }; // Chỉ tìm khóa học có active trong mảng status
+    }
+
+    // Tìm kiếm với các điều kiện
+    const courses = await Courses.find(query)
+      .populate("owner", "username") // Populate owner nhưng không lọc theo username tại đây
       .sort({ createdAt: -1 });
 
-    const total = coursesTotal?.length;
+    // Lọc những khóa học có `owner` khớp điều kiện sau khi populate
+    const filteredCourses = courses.filter((course) => course.owner !== null);
+
+    // Lấy tổng số khóa học thỏa mãn điều kiện ban đầu
+    const total = await Courses.countDocuments(query);
 
     res.json({
       success: true,
-      message: "get list all successfull",
-      data: courses,
+      message: "Get list all successful",
+      data: filteredCourses,
       total: total,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({ success: false, message: "Internal error server" });
   }
 };
 
 export const listCourseOwner = async (req, res) => {
-  const { userId } = req.body;
+  const { userId, keyword = "", status } = req.body;
   try {
-    const coursesTotal = await Courses.find({
-      owner: await Users.find({ _id: userId }),
-    });
-    let courses = await Courses.find({
-      owner: await Users.find({ _id: userId }),
-    })
-      .populate("owner")
+    // Tạo điều kiện tìm kiếm chính cho khóa học
+    const query = {
+      owner: userId, // Lọc theo owner (tìm khóa học của người dùng)
+      $or: [
+        { name: { $regex: keyword, $options: "i" } }, // Tìm theo tên khóa học
+        { language: { $regex: keyword, $options: "i" } }, // Tìm theo ngôn ngữ
+        { my_language: { $regex: keyword, $options: "i" } }, // Tìm theo ngôn ngữ
+      ],
+    };
+
+    // Nếu có `status` thì thêm điều kiện cho trạng thái khóa học
+    if (status && status.length > 0) {
+      query.active = { $in: status }; // Chỉ tìm khóa học có active trong mảng status
+    }
+
+    // Tìm kiếm với các điều kiện
+    const courses = await Courses.find(query)
+      .populate("owner", "username") // Populate owner nhưng không lọc theo username tại đây
       .sort({ createdAt: -1 });
-    const total = coursesTotal?.length;
+
+    // Lọc các khóa học có `owner` không phải null sau khi populate
+    const filteredCourses = courses.filter((course) => course.owner !== null);
+
+    // Lấy tổng số khóa học thỏa mãn điều kiện ban đầu
+    const total = await Courses.countDocuments(query);
 
     res.json({
       success: true,
-      message: "get list successfull",
-      data: courses,
+      message: "Get list of courses owned by user successful",
+      data: filteredCourses,
       total: total,
     });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({ success: false, message: "Internal error server" });
   }
 };
@@ -157,26 +205,73 @@ export const detail = async (req, res) => {
   }
 };
 
-export const deleteCourse = async (req, res) => {
-  const { id } = req.body;
+export const deleteCourseByUserId = async (req, res) => {
+  const { courseId, userId } = req.body; // Lấy id của khóa học và user từ request
+
   try {
-    const course = await Courses.findById(id);
+    const course = await Courses.findById(courseId);
+
     if (!course) {
-      res.json({
+      return res.status(404).json({
+        code: "E404",
         success: false,
-        message: "course not found",
-        data: course,
+        message: "Course not found",
       });
     }
-    course.deleteOne();
+
+    // Xóa khóa học khỏi danh sách courses của người dùng cụ thể
+    const user = await Users.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        code: "E404",
+        success: false,
+        message: "User not found",
+      });
+    }
+    user.courses = user.courses.filter(
+      (courseId) => courseId.toString() !== courseId
+    );
+    await user.save();
+
+    // Xóa khóa học khỏi cơ sở dữ liệu
+    await course.deleteOne();
+
     res.json({
       success: true,
-      message: "delete course successfull",
+      message: "Delete course successful",
       data: course,
     });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ success: false, message: "Internal error server" });
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+};
+
+export const deleteCourse = async (req, res) => {
+  const { id } = req.body;
+
+  try {
+    const course = await Courses.findById(id);
+
+    if (!course) {
+      return res.status(404).json({
+        code: "E404",
+        success: false,
+        message: "Course not found",
+      });
+    }
+
+    // Delete the course
+    await course.deleteOne();
+
+    res.json({
+      success: true,
+      message: "Delete course successful",
+      data: course,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
 
@@ -208,7 +303,8 @@ export const removeMyCourse = async (req, res) => {
   try {
     const user = await Users.findById(userId);
     if (!user?.wishList && !user.wishList.includes(courseId)) {
-      return res.status(401).json({
+      return res.status(404).json({
+        code: "E404",
         success: false,
         message: "course not found",
       });
@@ -241,5 +337,49 @@ export const getMyCourses = async (req, res) => {
   } catch (error) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal error server" });
+  }
+};
+
+export const uploadFile = async (req, res) => {
+  try {
+    // Kiểm tra xem file đã được upload hay chưa
+    if (!req.file) {
+      return res.status(400).json({
+        success: false,
+        message: "No file uploaded or unsupported file type",
+      });
+    }
+
+    // Lấy thông tin file đã upload
+    const filePath = `${req.protocol}://${req.get("host")}/uploads/${
+      req.file.mimetype.startsWith("image/") ? "images" : "videos"
+    }/${req.file.filename}`;
+
+    // Trả về phản hồi thành công
+    return res.json({
+      success: true,
+      message: "File uploaded successfully",
+      data: {
+        originalName: req.file.originalname,
+        fileType: req.file.mimetype,
+        fileSize: req.file.size,
+        filePath: filePath,
+      },
+    });
+  } catch (error) {
+    // Xử lý lỗi kích thước file vượt quá giới hạn
+    if (error.code === "LIMIT_FILE_SIZE") {
+      return res.status(413).json({
+        success: false,
+        message: "File size too large",
+      });
+    }
+
+    // Xử lý lỗi hệ thống khác
+    console.error("Error uploading file:", error);
+    res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
   }
 };

@@ -8,6 +8,7 @@ export const createProgress = async (req, res) => {
     const progressFounded = await Progress.find({ ownerId: userId });
     if (progressFounded.length > 0) {
       return res.status(400).json({
+        code: "E400",
         success: false,
         message: "Progress already taken.",
       });
