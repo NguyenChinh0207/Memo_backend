@@ -1,6 +1,7 @@
 import express from "express";
 import multer from "multer";
 import pkg from "uuid";
+import fs from "fs";
 import path from "path";
 import verifyToken from "../middleware/auth.js";
 import {
