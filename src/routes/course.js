@@ -22,10 +22,16 @@ const courseRouter = express.Router();
 const { v4: uuid } = pkg;
 const __dirname = path.resolve(); // Xác định thư mục gốc
 
-// Cấu hình Multer để lưu trữ file
+// Tạo thư mục nếu chưa tồn tại
+const createDirectoryIfNotExists = (directory) => {
+  if (!fs.existsSync(directory)) {
+    fs.mkdirSync(directory, { recursive: true });
+  }
+};
+
+// Cập nhật trong cấu hình `storage`
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    // Phân loại tệp và xác định thư mục lưu trữ
     const uploadPath = file.mimetype.startsWith("image/")
       ? path.join(__dirname, "uploads", "images")
       : file.mimetype.startsWith("video/")
@@ -33,14 +39,15 @@ const storage = multer.diskStorage({
       : null;
 
     if (uploadPath) {
-      cb(null, uploadPath); // Thư mục hợp lệ
+      createDirectoryIfNotExists(uploadPath); // Tạo thư mục nếu chưa tồn tại
+      cb(null, uploadPath);
     } else {
-      cb(new Error("Invalid file type")); // Loại tệp không hợp lệ
+      cb(new Error("Invalid file type"));
     }
   },
   filename: (req, file, cb) => {
-    const fileName = file.originalname.toLowerCase().split(" ").join("-"); // Chuẩn hóa tên tệp
-    cb(null, `${uuid()}-${fileName}`); // Tên tệp với UUID
+    const fileName = file.originalname.toLowerCase().split(" ").join("-");
+    cb(null, `${uuid()}-${fileName}`);
   },
 });
 
