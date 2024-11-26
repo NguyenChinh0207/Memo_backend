@@ -15,7 +15,8 @@ app.use(express.json());
 app.use(cors());
 
 // Phục vụ file tĩnh từ thư mục uploads
-app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+// app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+app.use("/src/public/uploads", express.static(path.join(__dirname, "/src/public/uploads")));
 
 // Endpoint mặc định
 app.get("/", (req, res) => {

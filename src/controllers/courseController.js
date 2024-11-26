@@ -350,10 +350,11 @@ export const uploadFile = async (req, res) => {
       });
     }
 
-    // Lấy thông tin file đã upload
-    const filePath = `${req.protocol}://${req.get("host")}/uploads/${
-      req.file.mimetype.startsWith("image/") ? "images" : "videos"
-    }/${req.file.filename}`;
+    // // Lấy thông tin file đã upload
+    // const filePath = `${req.protocol}://${req.get("host")}/uploads/${
+    //   req.file.mimetype.startsWith("image/") ? "images" : "videos"
+    // }/${req.file.filename}`;
+    const relativePath = req.file.relativePath;
 
     // Trả về phản hồi thành công
     return res.json({
@@ -363,7 +364,7 @@ export const uploadFile = async (req, res) => {
         originalName: req.file.originalname,
         fileType: req.file.mimetype,
         fileSize: req.file.size,
-        filePath: filePath,
+        filePath: relativePath,
       },
     });
   } catch (error) {

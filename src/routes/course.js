@@ -1,7 +1,7 @@
 import express from "express";
 import multer from "multer";
-import pkg from "uuid";
 import fs from "fs";
+import pkg from "uuid";
 import path from "path";
 import verifyToken from "../middleware/auth.js";
 import {
@@ -18,10 +18,12 @@ import {
   uploadFile,
 } from "../controllers/courseController.js";
 
-
 const courseRouter = express.Router();
 const { v4: uuid } = pkg;
 const __dirname = path.resolve(); // Xác định thư mục gốc
+
+// Đường dẫn gốc cho thư mục uploads
+const UPLOAD_BASE_PATH = path.join("src", "public", "uploads");
 
 // Tạo thư mục nếu chưa tồn tại
 const createDirectoryIfNotExists = (directory) => {
@@ -30,13 +32,13 @@ const createDirectoryIfNotExists = (directory) => {
   }
 };
 
-// Cập nhật trong cấu hình `storage`
+// Cấu hình multer storage
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const uploadPath = file.mimetype.startsWith("image/")
-      ? path.join(__dirname, "uploads", "images")
+      ? path.join(UPLOAD_BASE_PATH, "images")
       : file.mimetype.startsWith("video/")
-      ? path.join(__dirname, "uploads", "videos")
+      ? path.join(UPLOAD_BASE_PATH, "videos")
       : null;
 
     if (uploadPath) {
@@ -68,6 +70,17 @@ const upload = multer({
   fileFilter: fileFilter,
 });
 
+// Middleware để chuyển đổi đường dẫn tuyệt đối thành tương đối
+const saveRelativePathMiddleware = (req, res, next) => {
+  if (req.file) {
+    req.file.relativePath = path.relative(
+      path.join(__dirname, UPLOAD_BASE_PATH),
+      req.file.path
+    );
+  }
+  next();
+};
+
 // Các route
 courseRouter.post("/create", verifyToken, create);
 courseRouter.post("/edit", verifyToken, edit);
@@ -79,6 +92,12 @@ courseRouter.post("/wishlist/remove", verifyToken, removeMyCourse);
 courseRouter.post("/mycourses", verifyToken, getMyCourses);
 courseRouter.post("/list/owner", verifyToken, listCourseOwner);
 courseRouter.post("/list/all", verifyToken, listAll);
-courseRouter.post("/upload", verifyToken, upload.single("file"), uploadFile);
+courseRouter.post(
+  "/upload",
+  verifyToken,
+  upload.single("file"),
+  saveRelativePathMiddleware, // Middleware mới
+  uploadFile
+);
 
 export default courseRouter;
