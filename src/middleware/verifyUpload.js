@@ -24,13 +24,7 @@ const verifyUpload = multer({
     ) {
       cb(null, true);
     } else {
-      cb(null, false);
-      res.status(422).json({
-        code: 422,
-        message:
-          "Định dạng file không đúng. Vui lòng tải lên định dạng .png, .jpg, .jpeg !",
-      });
-      next();
+      cb(new Error("Invalid file type. Please upload .png, .jpg, or .jpeg files."));
     }
   },
 });
