@@ -1,6 +1,5 @@
 import express from "express";
 import multer from "multer";
-import fs from "fs";
 import pkg from "uuid";
 import path from "path";
 import verifyToken from "../middleware/auth.js";
@@ -24,13 +23,6 @@ const __dirname = path.resolve(); // Xác định thư mục gốc
 
 // Đường dẫn gốc cho thư mục uploads
 const UPLOAD_BASE_PATH = path.join("src", "public", "uploads");
-
-// Tạo thư mục nếu chưa tồn tại
-const createDirectoryIfNotExists = (directory) => {
-  if (!fs.existsSync(directory)) {
-    fs.mkdirSync(directory, { recursive: true });
-  }
-};
 
 // Cấu hình multer storage
 const storage = multer.diskStorage({
