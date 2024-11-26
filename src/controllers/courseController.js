@@ -149,10 +149,10 @@ export const listAll = async (req, res) => {
 
 export const listCourseOwner = async (req, res) => {
   const { userId, keyword = "", status } = req.body;
+
   try {
-    // Tạo điều kiện tìm kiếm chính cho khóa học
+    // Tạo điều kiện tìm kiếm chính
     const query = {
-      owner: userId, // Lọc theo owner (tìm khóa học của người dùng)
       $or: [
         { name: { $regex: keyword, $options: "i" } }, // Tìm theo tên khóa học
         { language: { $regex: keyword, $options: "i" } }, // Tìm theo ngôn ngữ
@@ -160,17 +160,22 @@ export const listCourseOwner = async (req, res) => {
       ],
     };
 
-    // Nếu có `status` thì thêm điều kiện cho trạng thái khóa học
-    if (status && status.length > 0) {
-      query.active = { $in: status }; // Chỉ tìm khóa học có active trong mảng status
+    // Nếu có userId thì thêm điều kiện owner
+    if (userId) {
+      query.owner = userId; // Lọc theo owner (tìm khóa học của người dùng)
     }
 
-    // Tìm kiếm với các điều kiện
+    // Nếu có status thì thêm điều kiện active
+    if (status && status.length > 0) {
+      query.active = { $in: status };
+    }
+
+    // Tìm kiếm khóa học với các điều kiện
     const courses = await Courses.find(query)
-      .populate("owner", "username") // Populate owner nhưng không lọc theo username tại đây
+      .populate("owner", "username") // Populate owner để lấy thông tin username
       .sort({ createdAt: -1 });
 
-    // Lọc các khóa học có `owner` không phải null sau khi populate
+    // Lọc các khóa học có owner không phải null
     const filteredCourses = courses.filter((course) => course.owner !== null);
 
     // Lấy tổng số khóa học thỏa mãn điều kiện ban đầu
@@ -178,7 +183,7 @@ export const listCourseOwner = async (req, res) => {
 
     res.json({
       success: true,
-      message: "Get list of courses owned by user successful",
+      message: "Get list of courses successful",
       data: filteredCourses,
       total: total,
     });
@@ -187,6 +192,7 @@ export const listCourseOwner = async (req, res) => {
     res.status(500).json({ success: false, message: "Internal error server" });
   }
 };
+
 
 export const detail = async (req, res) => {
   const { id } = req.body;
@@ -335,6 +341,58 @@ export const getMyCourses = async (req, res) => {
       data: myCourses,
     });
   } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "Internal error server" });
+  }
+};
+
+export const getUniqueUsers = async (req, res) => {
+  try {
+    const uniqueOwners = await Courses.aggregate([
+      // Lấy chỉ trường owner
+      {
+        $project: {
+          owner: 1,
+        },
+      },
+      // Gom các ObjectId của owner vào một mảng duy nhất
+      {
+        $group: {
+          _id: null,
+          owners: { $addToSet: "$owner" },
+        },
+      },
+      // Dùng $unwind để tách từng owner
+      {
+        $unwind: "$owners",
+      },
+      // Join với collection User để lấy chi tiết
+      {
+        $lookup: {
+          from: "users",
+          localField: "owners",
+          foreignField: "_id",
+          as: "ownerDetails",
+        },
+      },
+      // Giữ lại thông tin đã join
+      {
+        $unwind: "$ownerDetails",
+      },
+      // Chỉ trả về trường cần thiết
+      {
+        $project: {
+          _id: "$owners",
+          username: "$ownerDetails.username",
+        },
+      },
+    ]);
+    return res.json({
+      success: true,
+      message: "get users successfull",
+      data: uniqueOwners.length > 0 ? uniqueOwners : [],
+    });
+  } catch (err) {
     console.log(error);
     res.status(500).json({ success: false, message: "Internal error server" });
   }

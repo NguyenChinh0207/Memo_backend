@@ -1,6 +1,5 @@
 import express from "express";
 import multer from "multer";
-import fs from "fs";
 import pkg from "uuid";
 import path from "path";
 import verifyToken from "../middleware/auth.js";
@@ -16,7 +15,9 @@ import {
   listCourseOwner,
   removeMyCourse,
   uploadFile,
+  getUniqueUsers
 } from "../controllers/courseController.js";
+import verifyUpload from "../middleware/verifyUpload.js";
 
 const courseRouter = express.Router();
 const { v4: uuid } = pkg;
@@ -24,13 +25,6 @@ const __dirname = path.resolve(); // Xác định thư mục gốc
 
 // Đường dẫn gốc cho thư mục uploads
 const UPLOAD_BASE_PATH = path.join("src", "public", "uploads");
-
-// Tạo thư mục nếu chưa tồn tại
-const createDirectoryIfNotExists = (directory) => {
-  if (!fs.existsSync(directory)) {
-    fs.mkdirSync(directory, { recursive: true });
-  }
-};
 
 // Cấu hình multer storage
 const storage = multer.diskStorage({
@@ -41,12 +35,7 @@ const storage = multer.diskStorage({
       ? path.join(UPLOAD_BASE_PATH, "videos")
       : null;
 
-    if (uploadPath) {
-      createDirectoryIfNotExists(uploadPath); // Tạo thư mục nếu chưa tồn tại
-      cb(null, uploadPath);
-    } else {
-      cb(new Error("Invalid file type"));
-    }
+      cb(null, "./src/public/uploads/images");
   },
   filename: (req, file, cb) => {
     const fileName = file.originalname.toLowerCase().split(" ").join("-");
@@ -95,9 +84,10 @@ courseRouter.post("/list/all", verifyToken, listAll);
 courseRouter.post(
   "/upload",
   verifyToken,
-  upload.single("file"),
-  saveRelativePathMiddleware, // Middleware mới
+  verifyUpload.single("file"),
+  saveRelativePathMiddleware,
   uploadFile
 );
+courseRouter.post("/unique/users", verifyToken, getUniqueUsers);
 
 export default courseRouter;
